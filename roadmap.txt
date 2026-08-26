@@ -1,0 +1,175 @@
+*Integração com Front-End, Mapa e Geolocalização*
+
+Na aula anterior, criamos uma API em NestJS capaz de consultar endereços por CEP e também obter latitude e longitude a partir do nome de uma cidade.
+
+Também criamos um fluxo integrado onde:
+CEP → ViaCEP → Cidade → Geolocalização → Latitude e Longitude
+
+Agora, vamos utilizar essas informações no Front-End.
+
+A ideia desta aula é fazer com que o usuário consiga informar um CEP e visualizar:
+* endereço
+* cidade
+* estado
+* latitude
+* longitude
+* localização no mapa
+Além disso, vamos permitir que o usuário utilize a própria localização atual.
+
+Antes de começar o Front-End, precisamos permitir que ele consiga acessar nossa API NestJS.
+Como o Front-End e o Back-End estarão rodando em origens diferentes, precisamos habilitar o CORS.
+No arquivo `main.ts`, vamos adicionar:
+`app.enableCors();`
+**O CORS permite que aplicações de origens diferentes possam se comunicar. Sem essa configuração, o navegador pode bloquear a requisição do Front-End para nossa API.**
+
+Agora, vamos garantir que o endpoint integrado da aula anterior esteja funcionando:
+`GET /localizacao/cep/:cep/coordenadas`
+
+Esse endpoint deverá retornar:
+* CEP
+* logradouro
+* bairro
+* cidade
+* estado
+* latitude
+* longitude
+
+Com o Back-End funcionando, vamos criar uma nova pasta para o Front-End.
+Estrutura:
+`frontend/`
+
+Dentro dela, vamos criar:
+* `index.html`
+* `style.css`
+* `script.js`
+
+No `index.html`, vamos criar:
+* um campo para digitar o CEP
+* um botão para buscar o CEP
+* um botão para utilizar a localização atual
+* uma área para mostrar os dados encontrados
+* uma área para exibir o mapa
+
+Para o mapa, vamos utilizar a biblioteca Leaflet.
+O Leaflet permite criar mapas interativos utilizando JavaScript.
+No `index.html`, vamos adicionar o CSS do Leaflet no `<head>`.
+Também vamos importar o JavaScript do Leaflet antes do nosso `script.js`.
+Agora, vamos para o `script.js`.
+
+Primeiro, vamos criar o mapa utilizando:
+`L.map()`
+
+Depois, vamos definir uma posição inicial com:
+`setView()`
+
+Também vamos adicionar uma camada de mapa utilizando o OpenStreetMap.
+Depois disso, vamos criar uma variável para armazenar o marcador atual.
+Essa variável será importante porque, ao fazer uma nova busca, vamos remover o marcador anterior antes de criar outro.
+
+Agora, vamos começar a integração do Front-End com o nosso Back-End.
+Vamos recuperar o botão de busca utilizando:
+`document.getElementById()`
+E adicionar um evento de clique com:
+`addEventListener()`
+
+Quando o usuário clicar em "Buscar CEP", vamos recuperar o valor digitado no input.
+
+Depois, vamos utilizar:
+`fetch()`
+
+para fazer uma requisição para nossa API.
+A URL será:
+`http://localhost:3000/localizacao/cep/${cep}/coordenadas`
+**Neste momento, o Front-End não está consultando diretamente o ViaCEP. Ele está consultando a nossa API NestJS.**
+
+O fluxo completo passa a ser:
+Front-End → Nossa API → ViaCEP → Geolocalização → Nossa API → Front-End
+
+Depois da requisição, vamos converter a resposta utilizando:
+`resposta.json()`
+
+Em seguida, vamos verificar:
+`resposta.ok`
+
+Se a resposta não estiver correta, vamos exibir a mensagem de erro retornada pela API.
+Se estiver tudo certo, vamos preencher os dados na tela.
+
+Vamos criar uma função para preencher:
+* CEP
+* logradouro
+* bairro
+* cidade
+* estado
+* latitude
+* longitude
+
+Depois, vamos utilizar latitude e longitude para atualizar o mapa.
+Para isso, vamos criar uma função chamada:
+`atualizarMapa()`
+
+Dentro dela, vamos utilizar:
+`mapa.setView()`
+para centralizar o mapa na localização encontrada.
+
+Também vamos criar um marcador utilizando:
+`L.marker()`
+
+Esse marcador será adicionado ao mapa e poderá exibir uma pequena mensagem com o endereço.
+
+**Sugestão de testes:**
+* CEP de São Paulo
+* CEP de outro estado
+* CEP inválido
+* CEP inexistente
+
+Agora, vamos adicionar uma segunda funcionalidade.
+
+O usuário poderá clicar em:
+`Usar minha localização`
+
+Para isso, vamos utilizar:
+`navigator.geolocation`
+**A Geolocation API é um recurso do próprio navegador que permite solicitar a localização atual do dispositivo, desde que o usuário autorize.**
+
+Antes de utilizar, vamos verificar se o navegador possui suporte:
+`if (!navigator.geolocation)`
+Caso não possua, mostramos uma mensagem.
+
+Se possuir, vamos utilizar:
+`navigator.geolocation.getCurrentPosition()`
+
+Esse método pode receber duas funções:
+* uma executada em caso de sucesso
+* outra executada em caso de erro
+
+Quando a localização for obtida com sucesso, teremos acesso a:
+`posicao.coords.latitude`
+e:
+`posicao.coords.longitude`
+
+Agora podemos utilizar essas coordenadas para atualizar nosso mapa.
+
+O fluxo será:
+Navegador → Permissão do usuário → Latitude e Longitude → JavaScript → Mapa
+
+Se o usuário negar a permissão, vamos exibir uma mensagem informando que a localização não pôde ser obtida.
+
+**Importante: a localização atual fornecida pelo navegador não vem da nossa API NestJS. Ela é obtida diretamente através de uma API do próprio navegador.**
+
+Agora, nossa aplicação possui dois fluxos diferentes.
+
+Primeiro fluxo:
+CEP → Front-End → NestJS → ViaCEP → Geolocalização → Mapa
+
+Segundo fluxo:
+Localização atual → Navegador → Latitude e Longitude → Mapa
+
+Para realizar os testes do Front-End, é recomendado utilizar um servidor local, como o Live Server.
+
+O Front-End pode rodar, por exemplo, em:
+`http://127.0.0.1:5500`
+
+Enquanto o Back-End continua rodando em:
+`http://localhost:3000`
+
+Por isso foi necessário habilitar o CORS.
