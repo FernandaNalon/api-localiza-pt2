@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>API Localiza</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- CSS do Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>API Localiza</h1>
+
+      <p>Consulte um CEP ou utilize sua localização atual.</p>
+
+      <div class="busca">
+        <input type="text" id="cep" placeholder="Digite o CEP" />
+
+        <button id="btnBuscar">Buscar CEP</button>
+
+        <button id="btnLocalizacao">Usar minha localização</button>
+      </div>
+
+      <div class="conteudo">
+        <section class="informacoes">
+          <h2>Informações</h2>
+
+          <p>
+            <strong>CEP:</strong>
+            <span id="resultadoCep">-</span>
+          </p>
+
+          <p>
+            <strong>Logradouro:</strong>
+            <span id="logradouro">-</span>
+          </p>
+
+          <p>
+            <strong>Bairro:</strong>
+            <span id="bairro">-</span>
+          </p>
+
+          <p>
+            <strong>Cidade:</strong>
+            <span id="cidade">-</span>
+          </p>
+
+          <p>
+            <strong>Estado:</strong>
+            <span id="estado">-</span>
+          </p>
+
+          <p>
+            <strong>Latitude:</strong>
+            <span id="latitude">-</span>
+          </p>
+
+          <p>
+            <strong>Longitude:</strong>
+            <span id="longitude">-</span>
+          </p>
+
+          <p id="mensagem" class="mensagem"></p>
+        </section>
+
+        <section class="mapa-container">
+          <div id="mapa"></div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Biblioteca Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>

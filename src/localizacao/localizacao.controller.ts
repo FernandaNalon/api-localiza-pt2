@@ -22,4 +22,12 @@ export class LocalizacaoController {
   buscarCidade(@Param('cidade') cidade: string) {
     return this.localizacaoService.buscarCidade(cidade);
   }
+
+  // ----------------
+  // AULA 2
+  //-----------------
+  @Get('cep/:cep/coordenadas')
+  buscarCepComCoordenadas(@Param('cep') cep: string) {
+    return this.localizacaoService.buscarCepComCoordenadas(cep);
+  }
 }

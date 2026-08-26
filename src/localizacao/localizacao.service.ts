@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 // O HttpService trabalha com Observable.
 // O lastValueFrom transforma o Observable
@@ -148,5 +153,28 @@ export class LocalizacaoService {
         'Não foi possível consultar o serviço de localização.',
       );
     }
+  }
+  // ----------------------------
+  // AULA 2
+  // ----------------------------
+
+  async buscarCepComCoordenadas(cep: string) {
+    // Primeiro buscamos o endereço pelo CEP.
+    const endereco = await this.buscarCep(cep);
+
+    // Depois utilizamos a cidade retornada
+    // para consultar latitude e longitude.
+    const localizacao = await this.buscarCidade(endereco.cidade);
+
+    // Montamos uma nova resposta.
+    return {
+      cep: endereco.cep,
+      logradouro: endereco.logradouro,
+      bairro: endereco.bairro,
+      cidade: endereco.cidade,
+      estado: endereco.estado,
+      latitude: localizacao.latitude,
+      longitude: localizacao.longitude,
+    };
   }
 }
